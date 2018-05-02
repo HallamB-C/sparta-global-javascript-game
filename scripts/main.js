@@ -1,16 +1,5 @@
-function createTile(id, contains, position){
-  this.id = id;
-  this.contains = false;
-  this.position = position;
-}
+var gameOver = false;
 
-function createUnit(id, shape, selected, moved, position){
-  this.id = id;
-  this.shape = shape;
-  this.selected = selected;
-  this.moved = moved;
-  this.position = position;
-}
 var unitTypes = [
   squarb = {
     "hp" : 4,
@@ -47,11 +36,11 @@ var unitTypes = [
 var units = [
   p1Unit1 = {
     "id" : 1,
-    "name" : "Saul",
+    "name" : "Timmy",
     "team" : 1,
-    "type" : squarb,
-    "hp" : squarb.hp,
-    "dmg" : squarb.dmg,
+    "type" : triangle,
+    "hp" : triangle.hp,
+    "dmg" : triangle.dmg,
     "selected" : false,
     "moved" : false,
     "position" : 0
@@ -80,11 +69,11 @@ var units = [
   },
   p1Unit4 = {
     "id" : 4,
-    "name" : "Simon",
+    "name" : "Cindy",
     "team" : 1,
-    "type" : squarb,
-    "hp" : squarb.hp,
-    "dmg" : squarb.dmg,
+    "type" : circle,
+    "hp" : circle.hp,
+    "dmg" : circle.dmg,
     "selected" : false,
     "moved" : false,
     "position" : 12
@@ -404,10 +393,14 @@ function swapTurn(){
     console.log(turn);
   }
   if(p1.units.length == 0){
-    alert("p2 wins");
+    gameOver = true;
+    $(".player2UnitInfo").html("You have won");
+    $(".player1UnitInfo").html("You have lost");
   }
   if(p2.units.length == 0){
-    alert("p1 wins");
+    gameOver = true;
+    $(".player1UnitInfo").html("You have won");
+    $(".player2UnitInfo").html("You have lost");
   }
 }
 
@@ -418,113 +411,104 @@ function swapTurn(){
       var thisSquare = $(this);
       // console.log("held is " + held);
       thisSquare.bind("click", function(){
-        console.log("contains is " + thisSquare.contains);
-        console.log((boardSquare.contains)? true : false);
-        // debugger;
-        if(p1.units != [] && p2.units != []){
-          if(boardSquare.contains && !selectedObject){
-            if(turn.team == held.team){
-                if(!held.moved){
-                selectedObject = held;
-                $("."+turn.name+"UnitName").html("Current Unit: " + selectedObject.name);
-                $("."+turn.name+"UnitHP").html("Health: " + selectedObject.hp);
-                $("."+turn.name+"UnitDMG").html("Damage: " + selectedObject.dmg);
-                oldTile = thisSquare;
-                oldObj = boardSquare;
-                boardSquare.contains = false;
-                // console.log("its " + held.id);
-                selectedObject.selected = true;
+        if(!gameOver){
+          console.log("contains is " + thisSquare.contains);
+          console.log((boardSquare.contains)? true : false);
+          // debugger;
+            if(boardSquare.contains && !selectedObject){
+              if(turn.team == held.team){
+                  if(!held.moved){
+                  selectedObject = held;
+                  $("."+turn.name+"UnitName").html("Current Unit: " + selectedObject.name);
+                  $("."+turn.name+"UnitHP").html("Health: " + selectedObject.hp);
+                  $("."+turn.name+"UnitDMG").html("Damage: " + selectedObject.dmg);
+                  oldObj = boardSquare;
+                  boardSquare.contains = false;
+                  // console.log("its " + held.id);
+                  selectedObject.selected = true;
+                  selectedObject.position = thisSquare.data("num");
+                  thisSquare.removeClass(held.type.class);
+                  thisSquare.html("M");
+                  thisSquare.addClass("selected");
+                  oldTile = thisSquare;
+                  console.log(turn.name + " " + turn.moves);
+                  // console.log(selectedObject.type.class);
+                  // console.log(this);
+                  // console.log(held);
+                }else{
+                  console.log("that piece has moved");
+                  $("."+turn.name+"UnitName").html("Current Unit: " + boardSquare.contains.name);
+                  $("."+turn.name+"UnitHP").html("Health: " + boardSquare.contains.hp);
+                  $("."+turn.name+"UnitDMG").html("Damage: " + boardSquare.contains.dmg);
+                  $("."+turn.name+"UnitInfo").html("This piece has already moved");
+                }
+              }else{
+                console.log("This piece is not yours");
+                $("."+turn.name+"UnitInfo").html("This piece is not yours");
+              }
+
+
+            }else if(boardSquare.canMoveTo.includes(selectedObject.position)){
+              if(boardSquare.contains == false ){
+                // debugger;
+                selectedObject.moved = true;
+                held = selectedObject;
+                oldTile.removeClass("selected");
+                oldTile.html("");
                 selectedObject.position = thisSquare.data("num");
-                thisSquare.removeClass(held.type.class);
-                thisSquare.html("M");
-                thisSquare.addClass("selected");
-                console.log(turn.name + " " + turn.moves);
-                // console.log(selectedObject.type.class);
+                boardSquare.contains = selectedObject;
+                thisSquare.addClass(selectedObject.type.class);
+                selectedObject.selected = false;
+                selectedObject = false;
                 // console.log(this);
                 // console.log(held);
-              }else{
-                console.log("that piece has moved");
-                $("."+turn.name+"UnitInfo").html("That piece has already moved");
-              }
-            }else{
-              console.log("This piece is not yours");
-              $("."+turn.name+"UnitInfo").html("This piece is not yours");
-            }
+                console.log("p1 moves " + p1.moves);
+                console.log("p2 moves " + p2.moves);
+                swapTurn();
 
-
-          }else if(boardSquare.canMoveTo.includes(selectedObject.position)){
-            if(boardSquare.contains == false ){
-              // debugger;
-              selectedObject.moved = true;
-              held = selectedObject;
-              oldTile.removeClass("selected");
-              oldTile.html("");
-              selectedObject.position = thisSquare.data("num");
-              boardSquare.contains = selectedObject;
-              thisSquare.addClass(selectedObject.type.class);
-              selectedObject.selected = false;
-              selectedObject = false;
-              // console.log(this);
-              // console.log(held);
-              console.log("p1 moves " + p1.moves);
-              console.log("p2 moves " + p2.moves);
-              swapTurn();
-
-            }else if(boardSquare.contains.team != selectedObject.team){
-              console.log("I'm attacking");
-              $("."+turn.name+"UnitInfo").html(selectedObject.name + " is attacking");
-              oldTile.removeClass("selected");
-              debugger;
-              boardSquare.contains.hp -= selectedObject.dmg;
-              if(boardSquare.contains.hp > 0){
-              }else{
-                thisSquare.html("X");
-                thisSquare.removeClass(boardSquare.contains.type.class);
-                thisSquare.addClass("clear");
-                var index = p1.units.indexOf(boardSquare.contains);
-                if(turn.team == 1){
-                  p2.units.splice(index, 1);
-                  $("."+turn.name+"UnitInfo").html(boardSquare.contains.name + " has died");
+              }else if(boardSquare.contains.team != selectedObject.team){
+                console.log("I'm attacking");
+                $("."+turn.name+"UnitInfo").html(selectedObject.name + " is attacking");
+                oldTile.removeClass("selected");
+                oldTile.html("");
+                debugger;
+                boardSquare.contains.hp -= selectedObject.dmg;
+                if(boardSquare.contains.hp > 0){
                 }else{
-                  p1.units.splice(index, 1);
+                  thisSquare.html("X");
+                  thisSquare.removeClass(boardSquare.contains.type.class);
+                  thisSquare.addClass("clear");
+                  var index = p1.units.indexOf(boardSquare.contains);
+                  if(turn.team == 1){
+                    p2.units.splice(index, 1);
+                    $("."+turn.name+"UnitInfo").html(boardSquare.contains.name + " has died");
+                  }else{
+                    p1.units.splice(index, 1);
+                  }
+                  console.log(p1.units);
+                  console.log(p2.units);
+                  boardSquare.contains = false;
+                  thisSquare.contains = false;
                 }
-                console.log(p1.units);
-                console.log(p2.units);
-                boardSquare.contains = false;
-                thisSquare.contains = false;
+
+                selectedObject.moved = true;
+                selectedObject.selected = false;
+                oldTile.addClass(selectedObject.type.class);
+                // oldTile.html(selectedObject.hp);
+                oldObj.contains = selectedObject;
+                selectedObject.position = oldTile.data();
+                selectedObject = false;
+                // console.log(this);
+                // console.log(held);
+                console.log("p1 moves " + p1.moves);
+                console.log("p2 moves " + p2.moves);
+                swapTurn();
+              }else{
+                console.log("thats our team");
               }
-
-              selectedObject.moved = true;
-              selectedObject.selected = false;
-              oldTile.addClass(selectedObject.type.class);
-              // oldTile.html(selectedObject.hp);
-              oldObj.contains = selectedObject;
-              selectedObject.position = oldTile.data();
-              selectedObject = false;
-              // console.log(this);
-              // console.log(held);
-              console.log("p1 moves " + p1.moves);
-              console.log("p2 moves " + p2.moves);
-              swapTurn();
-            }else{
-              console.log("thats our team");
-
             }
-          }
         }else{
-          if(p1.units == []){
-            alert("p2 wens");
-          }
-          if(p2.units == []){
-            alert("p1 wens");
-          }
+          alert("The game has ended");
         }
       });
     });
-
-
-// var mutliArray = [[], []];
-// console.log(mutliArray);
-// mutliArray[0].push(1);
-// mutliArray[1].push(1);
-// console.log(mutliArray);

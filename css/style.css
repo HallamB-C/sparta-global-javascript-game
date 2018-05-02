@@ -38,39 +38,39 @@ td {
   padding: 0;
 }
 .square{
-  background-image: url("square.png");
+  background-image: url("../images/square.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 85px;
   color: white;
 }
 .square2{
-  background-image: url("square2.png");
+  background-image: url("../images/square2.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 85px;
   color: white;
 }
 .triangle{
-  background-image: url("triangle.png");
+  background-image: url("../images/triangle.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100px;
 }
 .triangle2{
-  background-image: url("triangle2.png");
+  background-image: url("../images/triangle2.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100px;
 }
 .circle{
-  background-image: url("circle.png");
+  background-image: url("../images/circle.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100px;
 }
 .circle2{
-  background-image: url("circle2.png");
+  background-image: url("../images/circle2.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100px;
