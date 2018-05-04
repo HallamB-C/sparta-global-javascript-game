@@ -1,5 +1,18 @@
 var gameOver = false;
-
+var timer = document.getElementById("timer");
+var attackSound = document.getElementById("soundHit");
+var deathSound = document.getElementById("soundDie");
+deathSound.volume = 0.25;
+var menuMusic = document.getElementById("menuMusic");
+menuMusic.volume = 0.25;
+menuMusic.play();
+menuMusic.loop = true;
+var gameMusic = document.getElementById("gameMusic");
+gameMusic.volume = 0.25;
+gameMusic.loop = true;
+var startButton = document.getElementById("startGame");
+var startScreen = document.getElementById("startScreen");
+var gameScreen = document.getElementById("gameScreen");
 var unitTypes = [
   squarb = {
     "hp" : 4,
@@ -93,9 +106,9 @@ var units = [
     "id" : 6,
     "name" : "Solomon",
     "team" : 2,
-    "type" : triangle2,
-    "hp" : triangle2.hp,
-    "dmg" : triangle2.dmg,
+    "type" : squarb2,
+    "hp" : squarb2.hp,
+    "dmg" : squarb2.dmg,
     "selected" : false,
     "moved" : false,
     "position" : 7
@@ -357,15 +370,40 @@ var players = [
     "units" : [p2Unit1,p2Unit2,p2Unit3,p2Unit4]
   }
 ]
-console.log(p1.units);
-console.log(p2.units);
-// var squareObject = new createUnit("square", "square", false, false, 0);
-console.log(p1Unit1);
-// tile0.contains = squareObject;
-console.log(tile0);
-
 var turn = p1;
-console.log(turn);
+
+startButton.onclick = function(){
+  startScreen.style.display = "none";
+  gameScreen.style.display = "block";
+  menuMusic.pause();
+  gameMusic.play();
+}
+
+var timeVar = 300;
+function startTime(){
+  $("#timer").html(timeVar);
+  if(timeVar > 0){
+    setTimeout(function(){
+      timeVar -= 1;
+      startTime();
+    }, 100);
+  }else{
+    if(p1.units.length > p2.units.length){
+      gameOver = true;
+      $(".player1UnitInfo").html("You have won");
+      $(".player2UnitInfo").html("You have lost");
+      $("#p1HUD").css("background-color", "#6ca5e7");
+      $("#p2HUD").css("background-color", "#9d0214");
+    }else{
+      gameOver = true;
+      $(".player2UnitInfo").html("You have won");
+      $(".player1UnitInfo").html("You have lost");
+      $("#p2HUD").css("background-color", "#fd102d");
+      $("#p1HUD").css("background-color", "#1f69c1");
+    }
+  }
+}
+startTime();
 //When a square is clicked swap the turn to X or back to naughts
 function swapTurn(){
   if(p1.moves >= p1.units.length){
@@ -386,21 +424,27 @@ function swapTurn(){
 
     turn = p2;
     p1.moves += 1;
-    console.log(turn);
+    $("#p2HUD").css("background-color", "#fd102d");
+    $("#p1HUD").css("background-color", "#1f69c1");
   }else if (turn == p2) {
     turn = p1;
     p2.moves += 1;
-    console.log(turn);
+    $("#p1HUD").css("background-color", "#6ca5e7");
+    $("#p2HUD").css("background-color", "#9d0214");
   }
   if(p1.units.length == 0){
     gameOver = true;
     $(".player2UnitInfo").html("You have won");
     $(".player1UnitInfo").html("You have lost");
+    $("#p2HUD").css("background-color", "#fd102d");
+    $("#p1HUD").css("background-color", "#1f69c1");
   }
   if(p2.units.length == 0){
     gameOver = true;
     $(".player1UnitInfo").html("You have won");
     $(".player2UnitInfo").html("You have lost");
+    $("#p1HUD").css("background-color", "#6ca5e7");
+    $("#p2HUD").css("background-color", "#9d0214");
   }
 }
 
@@ -409,12 +453,8 @@ function swapTurn(){
       var held = board[$(this).data("num")].contains;
       var boardSquare = board[$(this).data("num")];
       var thisSquare = $(this);
-      // console.log("held is " + held);
       thisSquare.bind("click", function(){
         if(!gameOver){
-          console.log("contains is " + thisSquare.contains);
-          console.log((boardSquare.contains)? true : false);
-          // debugger;
             if(boardSquare.contains && !selectedObject){
               if(turn.team == held.team){
                   if(!held.moved){
@@ -427,8 +467,7 @@ function swapTurn(){
                   // console.log("its " + held.id);
                   selectedObject.selected = true;
                   selectedObject.position = thisSquare.data("num");
-                  thisSquare.removeClass(held.type.class);
-                  thisSquare.html("M");
+                  thisSquare.css("background-color", "darkgreen");
                   thisSquare.addClass("selected");
                   oldTile = thisSquare;
                   console.log(turn.name + " " + turn.moves);
@@ -453,8 +492,8 @@ function swapTurn(){
                 // debugger;
                 selectedObject.moved = true;
                 held = selectedObject;
-                oldTile.removeClass("selected");
-                oldTile.html("");
+                oldTile.removeClass(selectedObject.type.class);
+                oldTile.css("background-color", "");
                 selectedObject.position = thisSquare.data("num");
                 boardSquare.contains = selectedObject;
                 thisSquare.addClass(selectedObject.type.class);
@@ -468,15 +507,18 @@ function swapTurn(){
 
               }else if(boardSquare.contains.team != selectedObject.team){
                 console.log("I'm attacking");
+                attackSound.play();
                 $("."+turn.name+"UnitInfo").html(selectedObject.name + " is attacking");
                 oldTile.removeClass("selected");
+                oldTile.css("background-color", "");
                 oldTile.html("");
                 debugger;
                 boardSquare.contains.hp -= selectedObject.dmg;
                 if(boardSquare.contains.hp > 0){
                 }else{
-                  thisSquare.html("X");
+                  // thisSquare.html("X");
                   thisSquare.removeClass(boardSquare.contains.type.class);
+                  deathSound.play();
                   thisSquare.addClass("clear");
                   var index = p1.units.indexOf(boardSquare.contains);
                   if(turn.team == 1){
@@ -484,6 +526,7 @@ function swapTurn(){
                     $("."+turn.name+"UnitInfo").html(boardSquare.contains.name + " has died");
                   }else{
                     p1.units.splice(index, 1);
+                    $("."+turn.name+"UnitInfo").html(boardSquare.contains.name + " has died");
                   }
                   console.log(p1.units);
                   console.log(p2.units);

@@ -2,91 +2,139 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Squarball's war</title>
+    <title>War for Flatland</title>
     <link rel="stylesheet" href="css/style.css">
+
     <!-- <script
   src="http://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script> -->
-  <script type="text/javascript" src="scripts/jQuery.js">
+  <script type="text/javascript" src="scripts/jQuery.js"></script>
+  <audio id="soundHit" src="sounds/hit.mp3"></audio>
+  <audio id="soundDie" src="sounds/die.mp3"></audio>
+  <audio id="menuMusic" src="sounds/Arcade-Puzzler.mp3"></audio>
+  <audio id="gameMusic" src="sounds/Pixel-Puppies.mp3"></audio>
 
-  </script>
   </head>
   <body>
-    <div id="p1HUD">
-      <h2 class="player1UnitName">Current Unit:</h2>
-      <h2 class="player1UnitHP">Health:</h2>
-      <h2 class="player1UnitDMG">Damage:</h2>
-      <h2 class="player1UnitInfo">Info:</h2>
+    <div id="startScreen">
+      <h1>War for Flatland</h1>
+      <div class="Instructions">
+        <div class="howToPlay">
+          <h3>Welcome to War for Flatland</h3>
+          <p>War for Flatland is a two player game. Each players goal is to remove all of their opponents pieces from the board.</p>
+          <p>The player on the right of the board (blue) starts first. On your turn you may either move or attack, you cannot do both.</p>
+          <p>If you do not want to move or attack an enemy piece you may move to the square you are already on to 'skip' your go.</p>
+          <button id="startGame" type="button" name="button">Start the game</button>
+        </div>
+        <div class="unitTypes">
+          <h3>Unit Types</h3>
+          <br>
+          <div class="unitPics">
+            <img class="squaresP" src="images/square.png" alt="A blue square">
+            <img class="squaresP" src="images/square2.png" alt="A red square">
+            <br>
+            <img class="trianglesP" src="images/triangle.png" alt="A blue square">
+            <img class="trianglesP" src="images/triangle2.png" alt="A red square">
+            <br>
+            <img class="circlesP" src="images/circle.png" alt="A blue square">
+            <img class="circlesP" src="images/circle2.png" alt="A red square">
+          </div>
+          <div class="unitDescription">
+            <p>These are the Squares for each player.</p>
+            <p>They have 4 health.</p>
+            <p>They deal 1 damage.</p>
+            <br>
+            <p>These are the Triangles for each player.</p>
+            <p>They have 3 health.</p>
+            <p>They deal 2 damage.</p>
+            <br>
+            <p>These are the Circles for each player.</p>
+            <p>They have 1 health.</p>
+            <p>They deal 4 damage.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <div id="p2HUD">
-      <h2 class="player2UnitName">Current Unit:</h2>
-      <h2 class="player2UnitHP">Health:</h2>
-      <h2 class="player2UnitDMG">Damage:</h2>
-      <h2 class="player2UnitInfo">Info:</h2>
-    </div>
-    <table id="myTable">
-    <thead>
-      <tr>
-        <td class="clear " data-num="0"></td>
-        <td class="clear " data-num="1"></td>
-        <td class="clear " data-num="2"></td>
-        <td class="clear " data-num="3"></td>
-        <td class="clear " data-num="4"></td>
-        <td class="clear " data-num="5"></td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="clear triangle" data-num="6"></td>
-        <td class="clear " data-num="7"></td>
-        <td class="clear tile" data-num="8"></td>
-        <td class="clear tile" data-num="9"></td>
-        <td class="clear tile" data-num="10"></td>
-        <td class="clear circle2" data-num="11"></td>
-      </tr>
-    </tbody>
-    <tbody>
-      <tr>
-        <td class="clear square" data-num="12"></td>
-        <td class="clear tile" data-num="13"></td>
-        <td class="clear tile" data-num="14"></td>
-        <td class="clear tile" data-num="15"></td>
-        <td class="clear tile" data-num="16"></td>
-        <td class="clear triangle2" data-num="17"></td>
-      </tr>
-    </tbody>
-    <tbody>
-      <tr>
-        <td class="clear square" data-num="18"></td>
-        <td class="clear tile" data-num="19"></td>
-        <td class="clear tile" data-num="20"></td>
-        <td class="clear tile" data-num="21"></td>
-        <td class="clear tile" data-num="22"></td>
-        <td class="clear square2" data-num="23"></td>
-      </tr>
-    </tbody>
-    <tbody>
-      <tr>
-        <td class="clear circle" data-num="24"></td>
-        <td class="clear tile" data-num="25"></td>
-        <td class="clear tile" data-num="26"></td>
-        <td class="clear tile" data-num="27"></td>
-        <td class="clear tile" data-num="28"></td>
-        <td class="clear triangle2" data-num="29"></td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <td class="clear " data-num="30"></td>
-        <td class="clear tile" data-num="31"></td>
-        <td class="clear tile" data-num="32"></td>
-        <td class="clear tile" data-num="33"></td>
-        <td class="clear tile" data-num="34"></td>
-        <td class="clear " data-num="35"></td>
-      </tr>
-    </tfoot>
-  </table>
+    <main id="gameScreen">
+      <h1>War for Flatland</h1>
+      <div id="p1HUD">
+        <h2 class="player1UnitName">Current Unit:</h2>
+        <h2 class="player1UnitHP">Health:</h2>
+        <h2 class="player1UnitDMG">Damage:</h2>
+        <h2 class="player1UnitInfo">Info:</h2>
+      </div>
+      <div id="p2HUD">
+        <h2 class="player2UnitName">Current Unit:</h2>
+        <h2 class="player2UnitHP">Health:</h2>
+        <h2 class="player2UnitDMG">Damage:</h2>
+        <h2 class="player2UnitInfo">Info:</h2>
+      </div>
+      <table id="myTable">
+        <thead>
+          <tr>
+            <td class="clear " data-num="0"></td>
+            <td class="clear " data-num="1"></td>
+            <td class="clear " data-num="2"></td>
+            <td class="clear " data-num="3"></td>
+            <td class="clear " data-num="4"></td>
+            <td class="clear " data-num="5"></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="clear triangle" data-num="6"></td>
+            <td class="clear " data-num="7"></td>
+            <td class="clear tile" data-num="8"></td>
+            <td class="clear tile" data-num="9"></td>
+            <td class="clear tile" data-num="10"></td>
+            <td class="clear circle2" data-num="11"></td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <td class="clear square" data-num="12"></td>
+            <td class="clear tile" data-num="13"></td>
+            <td class="clear tile" data-num="14"></td>
+            <td class="clear tile" data-num="15"></td>
+            <td class="clear tile" data-num="16"></td>
+            <td class="clear square2" data-num="17"></td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <td class="clear square" data-num="18"></td>
+            <td class="clear tile" data-num="19"></td>
+            <td class="clear tile" data-num="20"></td>
+            <td class="clear tile" data-num="21"></td>
+            <td class="clear tile" data-num="22"></td>
+            <td class="clear square2" data-num="23"></td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <td class="clear circle" data-num="24"></td>
+            <td class="clear tile" data-num="25"></td>
+            <td class="clear tile" data-num="26"></td>
+            <td class="clear tile" data-num="27"></td>
+            <td class="clear tile" data-num="28"></td>
+            <td class="clear triangle2" data-num="29"></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="clear " data-num="30"></td>
+            <td class="clear tile" data-num="31"></td>
+            <td class="clear tile" data-num="32"></td>
+            <td class="clear tile" data-num="33"></td>
+            <td class="clear tile" data-num="34"></td>
+            <td class="clear " data-num="35"></td>
+          </tr>
+        </tfoot>
+      </table>
+      <h2 id="timer">5.00</h2>
+    </main>
 
 
 
