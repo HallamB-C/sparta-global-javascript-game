@@ -1,5 +1,7 @@
 var gameOver = false;
+//game timer
 var timer = document.getElementById("timer");
+//game sounds
 var attackSound = document.getElementById("soundHit");
 var deathSound = document.getElementById("soundDie");
 deathSound.volume = 0.25;
@@ -10,6 +12,7 @@ menuMusic.loop = true;
 var gameMusic = document.getElementById("gameMusic");
 gameMusic.volume = 0.25;
 gameMusic.loop = true;
+//button objects
 var startButton = document.getElementById("startGame");
 var startScreen = document.getElementById("startScreen");
 var gameScreen = document.getElementById("gameScreen");
@@ -45,7 +48,7 @@ var unitTypes = [
     "class" : "circle2"
   }
 ]
-
+//game object variables
 var units = [
   p1Unit1 = {
     "id" : 1,
@@ -371,22 +374,24 @@ var players = [
   }
 ]
 var turn = p1;
-
+//start the game
 startButton.onclick = function(){
   startScreen.style.display = "none";
   gameScreen.style.display = "block";
   menuMusic.pause();
   gameMusic.play();
+
+  startTime();
 }
 
-var timeVar = 300;
+var timeVar = 330;
 function startTime(){
   $("#timer").html(timeVar);
   if(timeVar > 0){
     setTimeout(function(){
       timeVar -= 1;
       startTime();
-    }, 100);
+    }, 1000);
   }else{
     if(p1.units.length > p2.units.length){
       gameOver = true;
@@ -403,7 +408,6 @@ function startTime(){
     }
   }
 }
-startTime();
 //When a square is clicked swap the turn to X or back to naughts
 function swapTurn(){
   if(p1.moves >= p1.units.length){
@@ -447,7 +451,7 @@ function swapTurn(){
     $("#p2HUD").css("background-color", "#9d0214");
   }
 }
-
+//main game board function
   $('#myTable td').each(function() {
     // debugger;
       var held = board[$(this).data("num")].contains;
